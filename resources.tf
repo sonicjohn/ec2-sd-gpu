@@ -86,7 +86,8 @@ resource "aws_iam_instance_profile" "stable_diffusion_instance_profile" {
 
 # ED25519 key and keypair
 resource "tls_private_key" "tf_default" {
-  algorithm = "ED25519"
+  algorithm = "RSA"
+  rsa_bits  = 4096
 }
 
 resource "aws_key_pair" "tf_default" {
