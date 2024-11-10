@@ -33,7 +33,7 @@ existing_bucket_name() {
     else
         echo "There is more than one Terraform Backend S3 Bucket Present."
         echo "Please manually remove the extra bucket(s) before proceeding."
-        exit
+        exit 1
     fi
     }
 
@@ -89,7 +89,7 @@ main() {
 
     if [ -z "${AWS_ACCESS_KEY_ID}" ] || [ -z "${AWS_SECRET_ACCESS_KEY}" ] || [ -z "${AWS_DEFAULT_REGION}" ]; then
         echo "One or more AWS secrets/variables is not populated. Please enter them in Github settings."
-        exit
+        exit 1
     fi
 
     while getopts ":ead" option; do
@@ -102,7 +102,7 @@ main() {
                 ACTION="destroy";;
             \?)
                 echo "Error: Invalid option"
-                exit;;
+                exit 1;;
         esac
     done
 
