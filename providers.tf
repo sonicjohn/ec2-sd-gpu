@@ -6,13 +6,13 @@ terraform {
   }
   backend "s3" {
     key    = "tfstate"
-    region = "us-west-2"
+    region = var.AWS_DEFAULT_REGION
     dynamodb_table = "terraform_state_lock"
   }
 }
 
 # configure the aws provider
 provider "aws" {
-  region = "us-west-2"
+  region = var.AWS_DEFAULT_REGION
 }
 
