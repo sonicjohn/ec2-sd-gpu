@@ -11,7 +11,7 @@ All that's needed from you is an AWS Access Key and Secret, which can be entered
 ## Instructions for Use
 - Fork a copy of this repo for yourself.
 - Navigate to the "Actions" tab in your forked repo and enable them.
-- If you don't have one already, create the IAM user for Terraform and grant it the appropriate permissions (see security note below). Then, create an access key for this user. This will give you your Github Actions Secrets, which are this "ACCESS_KEY_ID_REQUIRED" and "SECRET_ACCESS_KEY_REQUIRED."
+- If you don't have one already, create the IAM user for Terraform and grant it the appropriate permissions (see security note below). Then, create an access key for this user. This will give you your Github Actions Secrets, which are these: "AWS_ACCESS_KEY_ID_REQUIRED" and "AWS_SECRET_ACCESS_KEY_REQUIRED."
 - Once you have these secrets, insert them into your forked GitHub repo under Settings (top menu) --> Secrets and Variables (left nav) --> Actions (left nav dropdown) --> Secrets (tab in body). See example screenshot [here](img/secrets.png).
 - Create the Github Actions Variables as seen in this [screenshot](img/variables.png). (They are in the original repo but are only visible to collaborators, so you have to re-create them yourself.) If you want to customize any variables with the "default" setting, feel free to do so. See note below for more specifics on variables.
 - Navigate to Actions (top menu) --> terraform-apply (left nav) --> Run workflow (dropdown at top right) and select "Run workflow" from the dropdown.
