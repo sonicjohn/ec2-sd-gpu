@@ -58,7 +58,7 @@ resource "aws_security_group" "sd_allow_rdp" {
 
 resource "aws_vpc_security_group_ingress_rule" "allow_rdp_ipv4" {
   security_group_id = aws_security_group.sd_allow_rdp.id
-  cidr_ipv4         = var.RDP_IP_ADDRESS == "" ? "0.0.0.0/0" : "${var.RDP_IP_ADDRESS}/32"
+  cidr_ipv4         = var.RDP_IP_ADDRESS == "EnterMyIPAddressForSecurityGroups" ? "0.0.0.0/0" : "${var.RDP_IP_ADDRESS}/32"
   from_port         = 3389
   ip_protocol       = "tcp"
   to_port           = 3389
@@ -94,34 +94,10 @@ resource "aws_key_pair" "tf_default" {
   public_key = tls_private_key.tf_default.public_key_openssh
 }
 
-/*
-resource "local_file" "admin_pw_file" {
-    #content  = local.admin_pw
-    content = "${rsadecrypt(aws_instance.windows_stable_diffusion.password_data,file("/home/jcarnes/.aws_tf/MOBILE5_WIN_EC2.pem"))}"
-    filename = "/home/jcarnes/.aws_tf/${aws_instance.windows_stable_diffusion.id}"
-    directory_permission = "0700"
-    file_permission = "0600"
-}
-
-resource "local_file" "admin_rdp_file" {
-    #content = local.rdp_content
-    content = join("\r",
-    [
-      "auto connect:i:1",
-      "full address:s:${aws_instance.windows_stable_diffusion.public_ip}",
-      "username:s:Administrator"
-    ])
-    filename = "/home/jcarnes/.aws_tf/${aws_instance.windows_stable_diffusion.id}.rdp"
-    directory_permission = "0700"
-    file_permission = "0600"
-}
-*/
-
 resource "aws_instance" "windows_stable_diffusion" {
 
   # AMI specification
   ami                    = data.aws_ami.windows.id # most recent Server 2022 AMI
-  #ami                    = "ami-049496b4104e8c810" # has SD with models and Steam Client; us-west2
 
   instance_market_options {
    market_type = var.SPOT_OR_ON_DEMAND != "" ? var.SPOT_OR_ON_DEMAND : "spot"
@@ -141,9 +117,8 @@ resource "aws_instance" "windows_stable_diffusion" {
   availability_zone      = local.AWS_AVAIL_ZONE
   subnet_id              = aws_subnet.sd_public.id
   vpc_security_group_ids = [aws_security_group.sd_allow_rdp.id]
-  key_name                = var.AWS_KEYPAIR_NAME != "" ? var.AWS_KEYPAIR_NAME : "ec2_gpu_tf_default"
+  key_name                = var.AWS_KEYPAIR_NAME != "EnterKeypairNameIfDesired" ? var.AWS_KEYPAIR_NAME : "ec2_gpu_tf_default"
   user_data              = file("userdata.tpl") # work in progress
-  #get_password_data      = "true" # enable to create admin_pw_file
   iam_instance_profile   = aws_iam_instance_profile.stable_diffusion_instance_profile.name
 
   tags = {
