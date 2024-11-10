@@ -58,7 +58,7 @@ resource "aws_security_group" "sd_allow_rdp" {
 
 resource "aws_vpc_security_group_ingress_rule" "allow_rdp_ipv4" {
   security_group_id = aws_security_group.sd_allow_rdp.id
-  cidr_ipv4         = var.RDP_IP_ADDRESS == "EnterMyIPAddressForSecurityGroups" ? "0.0.0.0/0" : "${var.RDP_IP_ADDRESS}/32"
+  cidr_ipv4         = var.RDP_IP_ADDRESS == "default" ? "0.0.0.0/0" : "${var.RDP_IP_ADDRESS}/32"
   from_port         = 3389
   ip_protocol       = "tcp"
   to_port           = 3389
@@ -117,7 +117,7 @@ resource "aws_instance" "windows_stable_diffusion" {
   availability_zone      = local.AWS_AVAIL_ZONE
   subnet_id              = aws_subnet.sd_public.id
   vpc_security_group_ids = [aws_security_group.sd_allow_rdp.id]
-  key_name                = var.AWS_KEYPAIR_NAME != "EnterKeypairNameIfDesired" ? var.AWS_KEYPAIR_NAME : "ec2_gpu_tf_default"
+  key_name                = var.AWS_KEYPAIR_NAME != "default" ? var.AWS_KEYPAIR_NAME : "ec2_gpu_tf_default"
   user_data              = file("userdata.tpl") # work in progress
   iam_instance_profile   = aws_iam_instance_profile.stable_diffusion_instance_profile.name
 
