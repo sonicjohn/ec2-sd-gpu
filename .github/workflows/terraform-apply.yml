@@ -1,0 +1,37 @@
+name: terraform-apply
+# Deploy manually
+on: workflow_dispatch
+
+env:
+  AWS_ACCESS_KEY_ID:  ${{ secrets.AWS_ACCESS_KEY_ID_REQUIRED }}
+  AWS_SECRET_ACCESS_KEY:  ${{ secrets.AWS_SECRET_ACCESS_KEY_REQUIRED }}
+  AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
+  TF_VAR_AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
+  TF_VAR_AWS_KEYPAIR_NAME: ${{ vars.AWS_KEYPAIR_NAME }}
+  TF_VAR_RDP_IP_ADDRESS: ${{ vars.RDP_IP_ADDRESS }}
+  TF_VAR_SPOT_OR_ON_DEMAND: ${{ vars.SPOT_OR_ON_DEMAND }}
+  TF_LOG: ${{ vars.TF_LOG }}
+
+jobs:
+  Terraform-Apply:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: hashicorp/setup-terraform@v3
+
+    - name: Terraform Backend
+      id: backend
+      run: scripts/tf-backend.sh -a
+
+    - name: Terraform Init
+      id: init
+      run: terraform init -backend-config="bucket=$S3_TF_STATE"
+
+    - name: Terraform Plan
+      id: plan
+      run: terraform plan -no-color
+      continue-on-error: false
+
+    - name: Terraform Apply
+      id: apply
+      run: terraform apply -auto-approve
